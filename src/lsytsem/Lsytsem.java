@@ -9,10 +9,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Line2D;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.Stack;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -53,7 +56,7 @@ public class Lsytsem {
         // nastaví layout okna
         window.setLayout(new FlowLayout());
         // přidám do okno objekt panelu DrawPanel
-        Rules r = new Rules("FF+[+F-F-F]-[-F+F+F]","F",50,22.5);
+        Rules r = new Rules("FF+[+F-F-F]-[-F+F+F]","F",135,25);
         DrawPanel dpanel = new DrawPanel(r);
         window.add(dpanel);
         ControlPanel cpanel = new ControlPanel(dpanel,r);
@@ -66,18 +69,18 @@ public class Lsytsem {
     
 }
 class DrawPanel extends JPanel{
-    private List<int[]>lines;
-    private int sx;
-    private int sy;
-    private int  x;
-    private int y;
+    private List<double[]>lines;
+    private double sx;
+    private double sy;
+    private double x;
+    private double y;
     private Stack s;
     
     public DrawPanel(Rules r){
         sx = 250;
         sy = 500;
-        x = (int) (Math.sin(Math.toRadians(0)) * r.distance);
-        y = (int) (Math.cos(Math.toRadians(0)) * r.distance);
+        x = (Math.sin(Math.toRadians(0)) * r.distance);
+        y = (Math.cos(Math.toRadians(0)) * r.distance);
         lines = new LinkedList<>();
         s = new Stack();
         setBorder(BorderFactory.createLineBorder(Color.black));
@@ -97,20 +100,22 @@ class DrawPanel extends JPanel{
     
     public void DrawingLines(Rules r){
         Graphics g = getGraphics();
-        g.drawLine(250,500,250,450);
+        Graphics2D g2 = (Graphics2D) g;
         g.setColor(Color.black);
+        sx = 250;
+        sy = 500;
         double rotate = 0;
         for (int i =0;i<r.axiom.length();i++){
             if (r.axiom.charAt(i) == '+'){
                rotate = rotate + r.Angle;
-               x = (int) (Math.sin(Math.toRadians(rotate)) *  r.distance);
-               y = (int) (Math.cos(Math.toRadians(rotate)) *  r.distance);
+               x = (Math.sin(Math.toRadians(rotate)) *  r.distance);
+               y = (Math.cos(Math.toRadians(rotate)) *  r.distance);
             }
             
             if (r.axiom.charAt(i) == '-'){
                rotate = rotate - r.Angle;
-               x = (int) (Math.sin(Math.toRadians(rotate))*  r.distance);
-               y = (int) (Math.cos(Math.toRadians(rotate))*  r.distance);
+               x = (Math.sin(Math.toRadians(rotate))*  r.distance);
+               y = (Math.cos(Math.toRadians(rotate))*  r.distance);
             }
             
             if (r.axiom.charAt(i) == '['){
@@ -119,28 +124,24 @@ class DrawPanel extends JPanel{
             }
             
             if (r.axiom.charAt(i) == ']'){
-                sy = (int) s.pop();
-                sx = (int) s.pop();
+                sy = (double) s.pop();
+                sx = (double) s.pop();
             }
             
             if (r.axiom.charAt(i) == 'F'){
-                int [] line = new int[4];
+                double [] line = new double[4];
                 line[0] = sx;
                 line[1] = sy;
                 line[2] = sx + x;
                 line[3] = sy - y;
-                System.out.println(line[0]);
-                System.out.println(line[1]);
-                System.out.println(line[2]);
-                System.out.println(line[3]);
                 lines.add(line);
                 sx = sx + x;
                 sy = sy - y;
             }
 
         }
-        for (int [] line : lines){
-            g.drawLine(line[0],line[1],line[2],line[3]);
+        for (double [] line : lines){
+            g2.draw(new Line2D.Double(line[0],line[1], line[2], line[3]));
         }
         
     }
@@ -157,10 +158,10 @@ class ControlPanel extends JPanel{
         but.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
+                dpanel.DrawingLines(r);
                 String c = r.drawing(r.rule,r.axiom);
                 System.out.println(c);
-                dpanel.DrawingLines(r);
-                r.distance = r.distance/2;
+                r.distance = (r.distance * 0.5);
             }
         });
         this.add(but);
@@ -170,7 +171,7 @@ class ControlPanel extends JPanel{
 class Rules {
     protected String rule; 
     protected String axiom;
-    protected int distance;
+    protected double distance;
     protected double Angle;
     
     public Rules (String rule_, String axiom_, int distance_, double angle_){
@@ -185,6 +186,9 @@ class Rules {
         for (int i = 0;i<axiom.length();i++){ 
             if (axiom.charAt(i) == 'F'){
                 axioms = axioms + rule;
+            }
+            else {
+                axioms = axioms + axiom.charAt(i);
             }
         }
         
