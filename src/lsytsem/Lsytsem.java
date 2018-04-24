@@ -165,6 +165,7 @@ class Rules {
                 axioms = axioms + rule;
             }
         }
+        
         System.out.println(axioms);
         this.axiom = axioms;
         return this.axiom;
