@@ -32,29 +32,35 @@ public class Lsytsem {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+        // volání funkce pro vytvoření grafického rozhraní
         createAndShowGUI();
     }
+    
     private static void createAndShowGUI(){
-        // objekt okna Jframe třída 
+        // tvorba okna
         JFrame window = new JFrame("Okno");
         // po zavření okna aplikace skončí
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // nastaví layout okna
+        // layout grafického rozhraní vedle sebe
         window.setLayout(new FlowLayout());
-        // přidám do okno objekt panelu DrawPanel
-        Tree r = new Tree();
+        // tvorba objektu Plants, DrawPanel a ControlPanel
+        Plants r = new Plants();
         DrawPanel dpanel = new DrawPanel(r);
+        // přidání objektu Drawpanel do grafického rozhraní 
         window.add(dpanel);
         ControlPanel cpanel = new ControlPanel(dpanel,r);
+        // přidání objektu ControlPanel do grafického rozhraní 
         window.add(cpanel);
+        // nastaví velikost okna tak, aby veškeré komponenty byly vidět
         window.pack();
-        // otevře okno
+        // Otevření okna
         window.setVisible(true);
     }
 
 }
+// třída pro kreslení
 class DrawPanel extends JPanel{
+    //vlastnosti
     private List<double[]>lines;
     private double sx;
     private double sy;
@@ -63,28 +69,32 @@ class DrawPanel extends JPanel{
     private double rotate;
     private Stack s;
     
-    public DrawPanel(Tree r){
+    // konstruktor
+    public DrawPanel(Plants r){
+        // začáteční bod (střed dole)
         sx = 250;
         sy = 500;
         x = (Math.sin(Math.toRadians(0)) * r.distance);
         y = (Math.cos(Math.toRadians(0)) * r.distance);
         lines = new LinkedList<>();
         s = new Stack();
+        // vytvoření pozadí
         setBorder(BorderFactory.createLineBorder(Color.black));
         setBackground(Color.white); 
     }
-    // když se ho pack zeptá jak má být velký - řekne 500 na 500
+    // velikost pozadí
     @Override
     public Dimension getPreferredSize(){
         return new Dimension(500,500);
     }
-    // kreslící funcke předdefinovaná
+    // kreslící metoda předdefinovaná
     @Override
     public void paintComponent(Graphics g){
-        // nejdříve si třída Jpanel nakreslí svoje a pak kreslíme my
+        // konstruktor třídy JPanel
         super.paintComponent(g);        
     }
-    public void reset(Tree r){
+    // metoda pro resetování hodnot na výchozí hodnoty
+    public void reset(Plants r){
         sx = 250;
         sy = 500;
         x = (Math.sin(Math.toRadians(0)) * r.distance);
@@ -94,24 +104,28 @@ class DrawPanel extends JPanel{
         lines.clear(); 
     }
     
-    public void DrawingLines(Tree r){
+    public void DrawingLines(Plants r){
+        //Vytvoření grafického objektu 
         Graphics g = getGraphics();
         Graphics2D g2 = (Graphics2D) g;
         g.setColor(Color.black);
+        // resetování hodnot
         reset(r);
+        // projde každý znak ve Stringu
         for (int i =0;i<r.axiom.length();i++){
+            // pokud je znak "+" kurzor se natočí doprava
             if (r.axiom.charAt(i) == '+'){
                rotate = rotate + r.Angle;
                x = (Math.sin(Math.toRadians(rotate)) *  r.distance);
                y = (Math.cos(Math.toRadians(rotate)) *  r.distance);
             }
-            
+            // pokud je znak "-" kurzor se natočí doleva
             if (r.axiom.charAt(i) == '-'){
                 rotate = rotate - r.Angle;
                 x = (Math.sin(Math.toRadians(rotate))*  r.distance);
                 y = (Math.cos(Math.toRadians(rotate))*  r.distance);
             }
-            
+            // uloží jednotlivé hodnoty do zásobníku
             if (r.axiom.charAt(i) == '['){
                 s.push(sx);
                 s.push(sy);
@@ -119,7 +133,7 @@ class DrawPanel extends JPanel{
                 s.push(x);
                 s.push(y);
             }
-            
+            // načte a odstraní jednotlivé hodnoty ze zásobníku
             if (r.axiom.charAt(i) == ']'){
                 y = (double) s.pop();
                 x = (double) s.pop();
@@ -128,28 +142,35 @@ class DrawPanel extends JPanel{
                 sx = (double) s.pop();
                 
             }
-            
+            // tvorba pole pro vykreslení linie
             if (r.axiom.charAt(i) == 'F'){
                 double [] line = new double[4];
+                // x,y začátečního bodu
                 line[0] = sx;
                 line[1] = sy;
+                // x,y koncového bodu
                 line[2] = sx + x;
                 line[3] = sy - y;
+                // přidání pole do listu
                 lines.add(line);
+                //přenastavení startovních bodů na body koncové
                 sx = sx + x;
                 sy = sy - y;
             }
 
         }
+        // vykreslování jednotlivých linií
         for (double [] line : lines){
             g2.draw(new Line2D.Double(line[0],line[1], line[2], line[3]));
         }
+        // odstranění grafického objektu
         g2.dispose();
     }
     
 }
-
+// třída, která reprezentuje tlačítka
 class ControlPanel extends JPanel{
+    // vlastnosti objektu
     private JButton gener;
     private JButton typ1;
     private JButton typ2;
@@ -163,11 +184,14 @@ class ControlPanel extends JPanel{
     private JButton del;
     private JButton end;
 
-    
-    public ControlPanel(DrawPanel dpanel, Tree r) {
+    // konstruktor
+    public ControlPanel(DrawPanel dpanel, Plants r) {
+        // Boxlyout - tlačítka se skládají pod sebe
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        
+        // přidání tlačítka Rostlina 1 
         typ1 = new JButton ("Rostlina 1");
+        // po stisknutí znemožní použití ostatních tlačítek pro vybrání typu
+        // rostliny
         typ1.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -179,7 +203,9 @@ class ControlPanel extends JPanel{
                 typ7.setEnabled(false);
                 typ8.setEnabled(false);
                 typ9.setEnabled(false);
+                // umožní generovat po jednotlivých krocích
                 gener.setEnabled(true);
+                // nastavení parametrů a pravidel pro rostlinu 1
                 r.typ1();
             }
         });
@@ -331,19 +357,25 @@ class ControlPanel extends JPanel{
         });
         this.add(typ9);
         
+        // tlačítko pro generování rostlin po jedné iteraci
         gener = new JButton ("Generovat");
         gener.setEnabled(false);
         gener.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
+                // zavolá metodu pro kreslení rostliny
                 dpanel.DrawingLines(r);
-                System.out.println(r.axiom);
-                r.drawing();
+                // zavolá metodu, která generuje nové symboly pro další
+                // vykreslení 
+                r.generate();
+                // zmenšení délky kreslení linie o půlku
                 r.distance = (r.distance * 0.5);
             }
         });
         this.add(gener);
         
+        // tlačítko, které resetuje všechny parametry a pravidla
+        // vyčistí pozadí a umožní si znovu vybrat nový typ rostliny
         del = new JButton ("Začni znovu");
         del.addActionListener(new ActionListener(){
             @Override
@@ -364,6 +396,7 @@ class ControlPanel extends JPanel{
         });
         this.add(del);
         
+        // tlačítko pro ukončení programu
         end = new JButton ("Konec");
         end.addActionListener(new ActionListener(){
             @Override
@@ -375,8 +408,9 @@ class ControlPanel extends JPanel{
         
     }
 }
-
-class Tree {
+// třída reprezentující rostliny 
+class Plants {
+    //vlastnosti objektu
     protected String ruleF;
     protected String ruleX;
     protected String ruleZ;
@@ -384,7 +418,8 @@ class Tree {
     protected double distance;
     protected double Angle;
     
-    public Tree (){
+    //konstruktor
+    public Plants (){
         this.ruleF = "";
         this.ruleX = "";
         this.ruleZ = "";
@@ -392,8 +427,8 @@ class Tree {
         this.distance = 0;
         this.Angle = 0;
     }
-    
-    public void drawing(){
+    // Metoda, která generuje jednotlivé symboly podle určitých pravidel
+    public void generate(){
         String axioms = "";
         for (int i = 0;i<axiom.length();i++){ 
             if (axiom.charAt(i) == 'F'){
@@ -411,7 +446,8 @@ class Tree {
         }
         this.axiom = axioms;
     }
-    
+    // metody, které reprezentují parametry a pravidla pro generování
+    // jednotlivých rostlin
     public void typ1(){
         this.ruleF = "FF+[+F-F-F]-[-F+F+F]";
         this.axiom = "F";
@@ -479,7 +515,7 @@ class Tree {
         this.distance = 130;
         this.Angle = 22;
     }
-    
+    // metoda, která resetuje pravidla a parametry
     public void reset(){
         this.ruleF = "";
         this.ruleX = "";
