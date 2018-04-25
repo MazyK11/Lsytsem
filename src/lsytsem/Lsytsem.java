@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -48,7 +49,7 @@ public class Lsytsem {
         // nastaví layout okna
         window.setLayout(new FlowLayout());
         // přidám do okno objekt panelu DrawPanel
-        Rules r = new Rules("FF+[+F-F-F]-[-F+F+F]","F",135,30);
+        Tree r = new Tree();
         DrawPanel dpanel = new DrawPanel(r);
         window.add(dpanel);
         ControlPanel cpanel = new ControlPanel(dpanel,r);
@@ -69,7 +70,7 @@ class DrawPanel extends JPanel{
     private double rotate;
     private Stack s;
     
-    public DrawPanel(Rules r){
+    public DrawPanel(Tree r){
         sx = 250;
         sy = 500;
         x = (Math.sin(Math.toRadians(0)) * r.distance);
@@ -77,7 +78,7 @@ class DrawPanel extends JPanel{
         lines = new LinkedList<>();
         s = new Stack();
         setBorder(BorderFactory.createLineBorder(Color.black));
-        setBackground(Color.white);
+        setBackground(Color.white); 
     }
     // když se ho pack zeptá jak má být velký - řekne 500 na 500
     @Override
@@ -88,19 +89,23 @@ class DrawPanel extends JPanel{
     @Override
     public void paintComponent(Graphics g){
         // nejdříve si třída Jpanel nakreslí svoje a pak kreslíme my
-        super.paintComponent(g);
+        super.paintComponent(g);        
     }
-    
-    public void DrawingLines(Rules r){
-        Graphics g = getGraphics();
-        Graphics2D g2 = (Graphics2D) g;
-        g.setColor(Color.black);
+    public void reset(Tree r){
         sx = 250;
         sy = 500;
         x = (Math.sin(Math.toRadians(0)) * r.distance);
         y = (Math.cos(Math.toRadians(0)) * r.distance);
         s = new Stack();
         rotate = 0;
+        lines.clear(); 
+    }
+    
+    public void DrawingLines(Tree r){
+        Graphics g = getGraphics();
+        Graphics2D g2 = (Graphics2D) g;
+        g.setColor(Color.black);
+        reset(r);
         for (int i =0;i<r.axiom.length();i++){
             if (r.axiom.charAt(i) == '+'){
                rotate = rotate + r.Angle;
@@ -146,58 +151,242 @@ class DrawPanel extends JPanel{
         for (double [] line : lines){
             g2.draw(new Line2D.Double(line[0],line[1], line[2], line[3]));
         }
-        
+        g2.dispose();
     }
     
 }
 
 class ControlPanel extends JPanel{
-    private JButton but;
+    private JButton gener;
+    private JButton typ1;
+    private JButton typ2;
+    private JButton typ3;
+    private JButton typ4;
+    private JButton typ5;
+    private JButton typ6;
+    private JButton del;
+    private JButton end;
 
     
-    public ControlPanel(DrawPanel dpanel, Rules r) {
+    public ControlPanel(DrawPanel dpanel, Tree r) {
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         
-        but = new JButton ("Generovat");
-        but.addActionListener(new ActionListener(){
+        typ1 = new JButton ("Strom 1");
+        typ1.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                typ2.setEnabled(false);
+                typ3.setEnabled(false);
+                typ4.setEnabled(false);
+                typ5.setEnabled(false);
+                typ6.setEnabled(false);
+                gener.setEnabled(true);
+                r.typ1();
+            }
+        });
+        this.add(typ1);
+        
+        
+        typ2 = new JButton ("Strom 2");
+        typ2.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                typ1.setEnabled(false);
+                typ3.setEnabled(false);
+                typ4.setEnabled(false);
+                typ5.setEnabled(false);
+                typ6.setEnabled(false);
+                gener.setEnabled(true);
+                r.typ2();
+            }
+        });
+        this.add(typ2);
+        
+        typ3 = new JButton ("Strom 3");
+        typ3.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                typ1.setEnabled(false);
+                typ2.setEnabled(false);
+                typ4.setEnabled(false);
+                typ5.setEnabled(false);
+                typ6.setEnabled(false);
+                gener.setEnabled(true);
+                r.typ3();
+            }
+        });
+        this.add(typ3);
+        
+        typ4 = new JButton ("Strom 4");
+        typ4.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                typ1.setEnabled(false);
+                typ2.setEnabled(false);
+                typ3.setEnabled(false);
+                typ5.setEnabled(false);
+                typ6.setEnabled(false);
+                gener.setEnabled(true);
+                r.typ4();
+            }
+        });
+        this.add(typ4);
+        
+        typ5 = new JButton ("Strom 5");
+        typ5.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                typ1.setEnabled(false);
+                typ2.setEnabled(false);
+                typ3.setEnabled(false);
+                typ4.setEnabled(false);
+                typ6.setEnabled(false);
+                gener.setEnabled(true);
+                r.typ5();
+            }
+        });
+        this.add(typ5);
+        
+        typ6 = new JButton ("Strom 6");
+        typ6.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                typ1.setEnabled(false);
+                typ2.setEnabled(false);
+                typ3.setEnabled(false);
+                typ4.setEnabled(false);
+                typ5.setEnabled(false);
+                gener.setEnabled(true);
+                r.typ6();
+            }
+        });
+        this.add(typ6);
+        
+        
+        gener = new JButton ("Generovat");
+        gener.setEnabled(false);
+        gener.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
                 dpanel.DrawingLines(r);
-                String c = r.drawing(r.rule,r.axiom);
-                System.out.println(c);
+                System.out.println(r.axiom);
+                r.drawing();
                 r.distance = (r.distance * 0.5);
             }
         });
-        this.add(but);
+        this.add(gener);
+        
+        del = new JButton ("Začni znovu");
+        del.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                typ1.setEnabled(true);
+                typ2.setEnabled(true);
+                typ3.setEnabled(true);
+                typ4.setEnabled(true);
+                typ5.setEnabled(true);
+                typ6.setEnabled(true);
+                gener.setEnabled(false);
+                r.typ3();
+                dpanel.repaint();
+            }
+        });
+        this.add(del);
+        
+        end = new JButton ("Konec");
+        end.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        this.add(end);
+        
     }
 }
 
-class Rules {
-    protected String rule; 
+class Tree {
+    protected String ruleF;
+    protected String ruleX;
     protected String axiom;
     protected double distance;
     protected double Angle;
     
-    public Rules (String rule_, String axiom_, int distance_, double angle_){
-        this.rule = rule_;
-        this.axiom = axiom_;
-        this.distance = distance_;
-        this.Angle = angle_;
+    public Tree (){
+        this.ruleF = "";
+        this.ruleX = "";
+        this.axiom = "";
+        this.distance = 0;
+        this.Angle = 0;
     }
     
-    public String drawing(String rule, String axiom){
+    public void drawing(){
         String axioms = "";
         for (int i = 0;i<axiom.length();i++){ 
             if (axiom.charAt(i) == 'F'){
-                axioms = axioms + rule;
+                axioms = axioms + ruleF;
+            }
+            else if(axiom.charAt(i) == 'X'){
+                axioms = axioms + ruleX;
             }
             else {
                 axioms = axioms + axiom.charAt(i);
             }
         }
-        
         this.axiom = axioms;
-        return this.axiom;
     }
     
+    public void typ1(){
+        this.ruleF = "FF+[+F-F-F]-[-F+F+F]";
+        this.axiom = "F";
+        this.distance = 135;
+        this.Angle = 22.5;
+    }
+    
+    public void typ2(){
+        this.ruleF = "F[+F]F[-F][F]";
+        this.axiom = "F";
+        this.distance = 250;
+        this.Angle = 20;
+    }
+    
+    public void typ3(){
+        this.ruleF = "F[+F]F[-F]F";
+        this.axiom = "F";
+        this.distance = 50;
+        this.Angle = 25.7;
+    }
+    
+    public void typ4(){
+        this.ruleF = "FF";
+        this.ruleX = "F[+X]F[-X]+X";
+        this.axiom = "X";
+        this.distance = 250;
+        this.Angle = 20;
+    }
+    
+    public void typ5(){
+        this.ruleF = "FF";
+        this.ruleX = "F[+X][-X]FX";
+        this.axiom = "X";
+        this.distance = 250;
+        this.Angle = 25.7;
+    }
+    
+    public void typ6(){
+        this.ruleF = "FF";
+        this.ruleX = "F-[[X]+X]+F[+FX]-X";
+        this.axiom = "X";
+        this.distance = 180;
+        this.Angle = 22.5;
+    }
+    
+    
+    public void reset(){
+        this.ruleF = "";
+        this.axiom = "";
+        this.distance = 0;
+        this.Angle = 0;
+    }
 }
 
