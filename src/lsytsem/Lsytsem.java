@@ -157,6 +157,9 @@ class ControlPanel extends JPanel{
     private JButton typ4;
     private JButton typ5;
     private JButton typ6;
+    private JButton typ7;
+    private JButton typ8;
+    private JButton typ9;
     private JButton del;
     private JButton end;
 
@@ -164,7 +167,7 @@ class ControlPanel extends JPanel{
     public ControlPanel(DrawPanel dpanel, Tree r) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         
-        typ1 = new JButton ("Strom 1");
+        typ1 = new JButton ("Rostlina 1");
         typ1.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -173,6 +176,9 @@ class ControlPanel extends JPanel{
                 typ4.setEnabled(false);
                 typ5.setEnabled(false);
                 typ6.setEnabled(false);
+                typ7.setEnabled(false);
+                typ8.setEnabled(false);
+                typ9.setEnabled(false);
                 gener.setEnabled(true);
                 r.typ1();
             }
@@ -180,7 +186,7 @@ class ControlPanel extends JPanel{
         this.add(typ1);
         
         
-        typ2 = new JButton ("Strom 2");
+        typ2 = new JButton ("Rostlina 2");
         typ2.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -189,13 +195,16 @@ class ControlPanel extends JPanel{
                 typ4.setEnabled(false);
                 typ5.setEnabled(false);
                 typ6.setEnabled(false);
+                typ7.setEnabled(false);
+                typ8.setEnabled(false);
+                typ9.setEnabled(false);
                 gener.setEnabled(true);
                 r.typ2();
             }
         });
         this.add(typ2);
         
-        typ3 = new JButton ("Strom 3");
+        typ3 = new JButton ("Rostlina 3");
         typ3.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -204,13 +213,16 @@ class ControlPanel extends JPanel{
                 typ4.setEnabled(false);
                 typ5.setEnabled(false);
                 typ6.setEnabled(false);
+                typ7.setEnabled(false);
+                typ8.setEnabled(false);
+                typ9.setEnabled(false);
                 gener.setEnabled(true);
                 r.typ3();
             }
         });
         this.add(typ3);
         
-        typ4 = new JButton ("Strom 4");
+        typ4 = new JButton ("Rostlina 4");
         typ4.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -219,13 +231,16 @@ class ControlPanel extends JPanel{
                 typ3.setEnabled(false);
                 typ5.setEnabled(false);
                 typ6.setEnabled(false);
+                typ7.setEnabled(false);
+                typ8.setEnabled(false);
+                typ9.setEnabled(false);
                 gener.setEnabled(true);
                 r.typ4();
             }
         });
         this.add(typ4);
         
-        typ5 = new JButton ("Strom 5");
+        typ5 = new JButton ("Rostlina 5");
         typ5.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -234,13 +249,16 @@ class ControlPanel extends JPanel{
                 typ3.setEnabled(false);
                 typ4.setEnabled(false);
                 typ6.setEnabled(false);
+                typ7.setEnabled(false);
+                typ8.setEnabled(false);
+                typ9.setEnabled(false);
                 gener.setEnabled(true);
                 r.typ5();
             }
         });
         this.add(typ5);
         
-        typ6 = new JButton ("Strom 6");
+        typ6 = new JButton ("Rostlina 6");
         typ6.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -249,12 +267,69 @@ class ControlPanel extends JPanel{
                 typ3.setEnabled(false);
                 typ4.setEnabled(false);
                 typ5.setEnabled(false);
+                typ7.setEnabled(false);
+                typ8.setEnabled(false);
+                typ9.setEnabled(false);
                 gener.setEnabled(true);
                 r.typ6();
             }
         });
         this.add(typ6);
         
+        typ7 = new JButton ("Rostlina 7");
+        typ7.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                typ1.setEnabled(false);
+                typ2.setEnabled(false);
+                typ3.setEnabled(false);
+                typ4.setEnabled(false);
+                typ5.setEnabled(false);
+                typ6.setEnabled(false);
+                typ8.setEnabled(false);
+                typ9.setEnabled(false);
+                gener.setEnabled(true);
+                r.typ7();
+            }
+        });
+        this.add(typ7);
+        
+        
+        typ8 = new JButton ("Rostlina 8");
+        typ8.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                typ1.setEnabled(false);
+                typ2.setEnabled(false);
+                typ3.setEnabled(false);
+                typ4.setEnabled(false);
+                typ5.setEnabled(false);
+                typ6.setEnabled(false);
+                typ7.setEnabled(false);
+                typ9.setEnabled(false);
+                gener.setEnabled(true);
+                r.typ8();
+            }
+        });
+        this.add(typ8);
+        
+        typ9 = new JButton ("Rostlina 9");
+        typ9.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                typ1.setEnabled(false);
+                typ2.setEnabled(false);
+                typ3.setEnabled(false);
+                typ4.setEnabled(false);
+                typ5.setEnabled(false);
+                typ6.setEnabled(false);
+                typ7.setEnabled(false);
+                typ8.setEnabled(false);
+                gener.setEnabled(true);
+                r.typ9();
+            }
+        });
+        this.add(typ9);
         
         gener = new JButton ("Generovat");
         gener.setEnabled(false);
@@ -279,8 +354,11 @@ class ControlPanel extends JPanel{
                 typ4.setEnabled(true);
                 typ5.setEnabled(true);
                 typ6.setEnabled(true);
+                typ7.setEnabled(true);
+                typ8.setEnabled(true);
+                typ9.setEnabled(true);
                 gener.setEnabled(false);
-                r.typ3();
+                r.reset();
                 dpanel.repaint();
             }
         });
@@ -301,6 +379,7 @@ class ControlPanel extends JPanel{
 class Tree {
     protected String ruleF;
     protected String ruleX;
+    protected String ruleZ;
     protected String axiom;
     protected double distance;
     protected double Angle;
@@ -308,6 +387,7 @@ class Tree {
     public Tree (){
         this.ruleF = "";
         this.ruleX = "";
+        this.ruleZ = "";
         this.axiom = "";
         this.distance = 0;
         this.Angle = 0;
@@ -321,6 +401,9 @@ class Tree {
             }
             else if(axiom.charAt(i) == 'X'){
                 axioms = axioms + ruleX;
+            }
+            else if(axiom.charAt(i) == 'Z'){
+                axioms = axioms + ruleZ;
             }
             else {
                 axioms = axioms + axiom.charAt(i);
@@ -374,9 +457,33 @@ class Tree {
         this.Angle = 22.5;
     }
     
+    public void typ7(){
+        this.ruleF = "F[+F][-F[-F]F]F[+F][-F]";
+        this.axiom = "F";
+        this.distance = 200;
+        this.Angle = 18;
+    }
+    
+    public void typ8(){
+        this.ruleF = "FX[FX[+XF]]";
+        this.ruleX = "FF[+XZ++X-F[+ZX]][-X++F-X]";
+        this.ruleZ = "[+F-X-F][++ZX]";
+        this.axiom = "X";
+        this.distance = 130;
+        this.Angle = 15;
+    }
+    
+    public void typ9(){
+        this.ruleF = "FF[+F][-FF][-F+F]";
+        this.axiom = "F";
+        this.distance = 130;
+        this.Angle = 22;
+    }
     
     public void reset(){
         this.ruleF = "";
+        this.ruleX = "";
+        this.ruleZ = "";
         this.axiom = "";
         this.distance = 0;
         this.Angle = 0;
