@@ -15,7 +15,6 @@ import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.Stack;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -33,13 +32,6 @@ public class Lsytsem {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-//        String rule = "FF+[+F-F-F]-[-F+F+F]"; 
-//        String axiom = "F";
-//        int distance = 5;
-//        double Angle = 22.5;
-//        for (int i = 0;i<3;i++){
-//            axiom = drawing(rule,axiom);
-//        }
         
         SwingUtilities.invokeLater(new Runnable(){
             public void run() {
@@ -56,7 +48,7 @@ public class Lsytsem {
         // nastaví layout okna
         window.setLayout(new FlowLayout());
         // přidám do okno objekt panelu DrawPanel
-        Rules r = new Rules("FF+[+F-F-F]-[-F+F+F]","F",135,25);
+        Rules r = new Rules("FF+[+F-F-F]-[-F+F+F]","F",135,30);
         DrawPanel dpanel = new DrawPanel(r);
         window.add(dpanel);
         ControlPanel cpanel = new ControlPanel(dpanel,r);
@@ -74,6 +66,7 @@ class DrawPanel extends JPanel{
     private double sy;
     private double x;
     private double y;
+    private double rotate;
     private Stack s;
     
     public DrawPanel(Rules r){
@@ -104,7 +97,10 @@ class DrawPanel extends JPanel{
         g.setColor(Color.black);
         sx = 250;
         sy = 500;
-        double rotate = 0;
+        x = (Math.sin(Math.toRadians(0)) * r.distance);
+        y = (Math.cos(Math.toRadians(0)) * r.distance);
+        s = new Stack();
+        rotate = 0;
         for (int i =0;i<r.axiom.length();i++){
             if (r.axiom.charAt(i) == '+'){
                rotate = rotate + r.Angle;
@@ -113,19 +109,26 @@ class DrawPanel extends JPanel{
             }
             
             if (r.axiom.charAt(i) == '-'){
-               rotate = rotate - r.Angle;
-               x = (Math.sin(Math.toRadians(rotate))*  r.distance);
-               y = (Math.cos(Math.toRadians(rotate))*  r.distance);
+                rotate = rotate - r.Angle;
+                x = (Math.sin(Math.toRadians(rotate))*  r.distance);
+                y = (Math.cos(Math.toRadians(rotate))*  r.distance);
             }
             
             if (r.axiom.charAt(i) == '['){
                 s.push(sx);
                 s.push(sy);
+                s.push(rotate);
+                s.push(x);
+                s.push(y);
             }
             
             if (r.axiom.charAt(i) == ']'){
+                y = (double) s.pop();
+                x = (double) s.pop();
+                rotate = (double) s.pop();
                 sy = (double) s.pop();
                 sx = (double) s.pop();
+                
             }
             
             if (r.axiom.charAt(i) == 'F'){
@@ -192,9 +195,9 @@ class Rules {
             }
         }
         
-        System.out.println(axioms);
         this.axiom = axioms;
         return this.axiom;
     }
     
 }
+
