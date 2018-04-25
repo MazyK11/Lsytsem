@@ -21,7 +21,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -34,12 +33,7 @@ public class Lsytsem {
      */
     public static void main(String[] args) {
         
-        SwingUtilities.invokeLater(new Runnable(){
-            public void run() {
-                createAndShowGUI();
-            }
-        });
- 
+        createAndShowGUI();
     }
     private static void createAndShowGUI(){
         // objekt okna Jframe třída 
@@ -58,8 +52,7 @@ public class Lsytsem {
         // otevře okno
         window.setVisible(true);
     }
-    
-    
+
 }
 class DrawPanel extends JPanel{
     private List<double[]>lines;
