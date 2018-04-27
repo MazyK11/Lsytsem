@@ -195,6 +195,7 @@ class ControlPanel extends JPanel{
         typ1.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
+                typ1.setEnabled(false);
                 typ2.setEnabled(false);
                 typ3.setEnabled(false);
                 typ4.setEnabled(false);
@@ -217,6 +218,7 @@ class ControlPanel extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 typ1.setEnabled(false);
+                typ2.setEnabled(false);
                 typ3.setEnabled(false);
                 typ4.setEnabled(false);
                 typ5.setEnabled(false);
@@ -236,6 +238,7 @@ class ControlPanel extends JPanel{
             public void actionPerformed(ActionEvent e) {
                 typ1.setEnabled(false);
                 typ2.setEnabled(false);
+                typ3.setEnabled(false);
                 typ4.setEnabled(false);
                 typ5.setEnabled(false);
                 typ6.setEnabled(false);
@@ -255,6 +258,7 @@ class ControlPanel extends JPanel{
                 typ1.setEnabled(false);
                 typ2.setEnabled(false);
                 typ3.setEnabled(false);
+                typ4.setEnabled(false);
                 typ5.setEnabled(false);
                 typ6.setEnabled(false);
                 typ7.setEnabled(false);
@@ -274,6 +278,7 @@ class ControlPanel extends JPanel{
                 typ2.setEnabled(false);
                 typ3.setEnabled(false);
                 typ4.setEnabled(false);
+                typ5.setEnabled(false);
                 typ6.setEnabled(false);
                 typ7.setEnabled(false);
                 typ8.setEnabled(false);
@@ -293,6 +298,7 @@ class ControlPanel extends JPanel{
                 typ3.setEnabled(false);
                 typ4.setEnabled(false);
                 typ5.setEnabled(false);
+                typ6.setEnabled(false);
                 typ7.setEnabled(false);
                 typ8.setEnabled(false);
                 typ9.setEnabled(false);
@@ -312,6 +318,7 @@ class ControlPanel extends JPanel{
                 typ4.setEnabled(false);
                 typ5.setEnabled(false);
                 typ6.setEnabled(false);
+                typ7.setEnabled(false);
                 typ8.setEnabled(false);
                 typ9.setEnabled(false);
                 gener.setEnabled(true);
@@ -332,6 +339,7 @@ class ControlPanel extends JPanel{
                 typ5.setEnabled(false);
                 typ6.setEnabled(false);
                 typ7.setEnabled(false);
+                typ8.setEnabled(false);
                 typ9.setEnabled(false);
                 gener.setEnabled(true);
                 r.typ8();
@@ -351,6 +359,7 @@ class ControlPanel extends JPanel{
                 typ6.setEnabled(false);
                 typ7.setEnabled(false);
                 typ8.setEnabled(false);
+                typ9.setEnabled(false);
                 gener.setEnabled(true);
                 r.typ9();
             }
