@@ -1,4 +1,4 @@
-### Vykreslování rostlin pomocí L-systému
+# Vykreslování rostlin pomocí L-systému
 
 Program je interaktivní a slouží k demonstraci kreslení růstu rostlin pomocí L-systému. Program nemá žádné vstupní parametry, vyžaduje od uživatele jen používání tlačítek v grafickém rozhraní. 
 
