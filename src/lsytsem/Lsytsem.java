@@ -5,6 +5,7 @@
  */
 package lsytsem;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -19,8 +20,12 @@ import java.util.Stack;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingWorker;
 
 /**
  *
@@ -42,15 +47,18 @@ public class Lsytsem {
         // po zavření okna aplikace skončí
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // layout grafického rozhraní vedle sebe
-        window.setLayout(new FlowLayout());
+        window.setLayout(new BorderLayout(10,10));
         // tvorba objektu Plants, DrawPanel a ControlPanel
         Plants r = new Plants();
         DrawPanel dpanel = new DrawPanel(r);
         // přidání objektu Drawpanel do grafického rozhraní 
-        window.add(dpanel);
+        window.add(dpanel,BorderLayout.CENTER);
+        
         ControlPanel cpanel = new ControlPanel(dpanel,r);
+        ControlPanelUP cpanelUP = new ControlPanelUP (r,dpanel);
         // přidání objektu ControlPanel do grafického rozhraní 
-        window.add(cpanel);
+        window.add(cpanelUP,BorderLayout.PAGE_START);
+        window.add(cpanel,BorderLayout.LINE_END);
         // nastaví velikost okna tak, aby veškeré komponenty byly vidět
         window.pack();
         // Otevření okna
@@ -72,8 +80,8 @@ class DrawPanel extends JPanel{
     // konstruktor
     public DrawPanel(Plants r){
         // začáteční bod (střed dole)
-        sx = 250;
-        sy = 500;
+        sx = this.getWidth()/2;
+        sy = this.getHeight();
         x = (Math.sin(Math.toRadians(0)) * r.distance);
         y = (Math.cos(Math.toRadians(0)) * r.distance);
         lines = new LinkedList<>();
@@ -91,12 +99,12 @@ class DrawPanel extends JPanel{
     @Override
     public void paintComponent(Graphics g){
         // konstruktor třídy JPanel
-        super.paintComponent(g);        
+        super.paintComponent(g);   
     }
     // metoda pro resetování hodnot na výchozí hodnoty
     public void reset(Plants r){
-        sx = 250;
-        sy = 500;
+        sx = this.getWidth()/2;
+        sy = this.getHeight();
         x = (Math.sin(Math.toRadians(0)) * r.distance);
         y = (Math.cos(Math.toRadians(0)) * r.distance);
         s = new Stack();
@@ -112,21 +120,21 @@ class DrawPanel extends JPanel{
         // resetování hodnot
         reset(r);
         // projde každý znak ve Stringu
-        for (int i =0;i<r.axiom.length();i++){
+        for (int i =0;i<r.strAxiom.length();i++){
             // pokud je znak "+" kurzor se natočí doprava
-            if (r.axiom.charAt(i) == '+'){
+            if (r.strAxiom.charAt(i) == '+'){
                rotate = rotate + r.Angle;
                x = (Math.sin(Math.toRadians(rotate)) *  r.distance);
                y = (Math.cos(Math.toRadians(rotate)) *  r.distance);
             }
             // pokud je znak "-" kurzor se natočí doleva
-            if (r.axiom.charAt(i) == '-'){
+            if (r.strAxiom.charAt(i) == '-'){
                 rotate = rotate - r.Angle;
                 x = (Math.sin(Math.toRadians(rotate))*  r.distance);
                 y = (Math.cos(Math.toRadians(rotate))*  r.distance);
             }
             // uloží jednotlivé hodnoty do zásobníku
-            if (r.axiom.charAt(i) == '['){
+            if (r.strAxiom.charAt(i) == '['){
                 s.push(sx);
                 s.push(sy);
                 s.push(rotate);
@@ -134,7 +142,7 @@ class DrawPanel extends JPanel{
                 s.push(y);
             }
             // načte a odstraní jednotlivé hodnoty ze zásobníku
-            if (r.axiom.charAt(i) == ']'){
+            if (r.strAxiom.charAt(i) == ']'){
                 y = (double) s.pop();
                 x = (double) s.pop();
                 rotate = (double) s.pop();
@@ -143,7 +151,7 @@ class DrawPanel extends JPanel{
                 
             }
             // tvorba pole pro vykreslení linie
-            if (r.axiom.charAt(i) == 'F'){
+            if (r.strAxiom.charAt(i) == 'F'){
                 double [] line = new double[4];
                 // x,y začátečního bodu
                 line[0] = sx;
@@ -157,7 +165,6 @@ class DrawPanel extends JPanel{
                 sx = sx + x;
                 sy = sy - y;
             }
-
         }
         // vykreslování jednotlivých linií
         for (double [] line : lines){
@@ -166,239 +173,48 @@ class DrawPanel extends JPanel{
         // odstranění grafického objektu
         g2.dispose();
     }
+   
     
 }
 // třída, která reprezentuje tlačítka
 class ControlPanel extends JPanel{
     // vlastnosti objektu
     private JButton gener;
-    private JButton typ1;
-    private JButton typ2;
-    private JButton typ3;
-    private JButton typ4;
-    private JButton typ5;
-    private JButton typ6;
-    private JButton typ7;
-    private JButton typ8;
-    private JButton typ9;
     private JButton del;
     private JButton end;
 
     // konstruktor
     public ControlPanel(DrawPanel dpanel, Plants r) {
-        // Boxlyout - tlačítka se skládají pod sebe
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        // přidání tlačítka Rostlina 1 
-        typ1 = new JButton ("Rostlina 1");
-        // po stisknutí znemožní použití ostatních tlačítek pro vybrání typu
-        // rostliny
-        typ1.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                typ1.setEnabled(false);
-                typ2.setEnabled(false);
-                typ3.setEnabled(false);
-                typ4.setEnabled(false);
-                typ5.setEnabled(false);
-                typ6.setEnabled(false);
-                typ7.setEnabled(false);
-                typ8.setEnabled(false);
-                typ9.setEnabled(false);
-                // umožní generovat po jednotlivých krocích
-                gener.setEnabled(true);
-                // nastavení parametrů a pravidel pro rostlinu 1
-                r.typ1();
-            }
-        });
-        this.add(typ1);
         
-        
-        typ2 = new JButton ("Rostlina 2");
-        typ2.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                typ1.setEnabled(false);
-                typ2.setEnabled(false);
-                typ3.setEnabled(false);
-                typ4.setEnabled(false);
-                typ5.setEnabled(false);
-                typ6.setEnabled(false);
-                typ7.setEnabled(false);
-                typ8.setEnabled(false);
-                typ9.setEnabled(false);
-                gener.setEnabled(true);
-                r.typ2();
-            }
-        });
-        this.add(typ2);
-        
-        typ3 = new JButton ("Rostlina 3");
-        typ3.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                typ1.setEnabled(false);
-                typ2.setEnabled(false);
-                typ3.setEnabled(false);
-                typ4.setEnabled(false);
-                typ5.setEnabled(false);
-                typ6.setEnabled(false);
-                typ7.setEnabled(false);
-                typ8.setEnabled(false);
-                typ9.setEnabled(false);
-                gener.setEnabled(true);
-                r.typ3();
-            }
-        });
-        this.add(typ3);
-        
-        typ4 = new JButton ("Rostlina 4");
-        typ4.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                typ1.setEnabled(false);
-                typ2.setEnabled(false);
-                typ3.setEnabled(false);
-                typ4.setEnabled(false);
-                typ5.setEnabled(false);
-                typ6.setEnabled(false);
-                typ7.setEnabled(false);
-                typ8.setEnabled(false);
-                typ9.setEnabled(false);
-                gener.setEnabled(true);
-                r.typ4();
-            }
-        });
-        this.add(typ4);
-        
-        typ5 = new JButton ("Rostlina 5");
-        typ5.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                typ1.setEnabled(false);
-                typ2.setEnabled(false);
-                typ3.setEnabled(false);
-                typ4.setEnabled(false);
-                typ5.setEnabled(false);
-                typ6.setEnabled(false);
-                typ7.setEnabled(false);
-                typ8.setEnabled(false);
-                typ9.setEnabled(false);
-                gener.setEnabled(true);
-                r.typ5();
-            }
-        });
-        this.add(typ5);
-        
-        typ6 = new JButton ("Rostlina 6");
-        typ6.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                typ1.setEnabled(false);
-                typ2.setEnabled(false);
-                typ3.setEnabled(false);
-                typ4.setEnabled(false);
-                typ5.setEnabled(false);
-                typ6.setEnabled(false);
-                typ7.setEnabled(false);
-                typ8.setEnabled(false);
-                typ9.setEnabled(false);
-                gener.setEnabled(true);
-                r.typ6();
-            }
-        });
-        this.add(typ6);
-        
-        typ7 = new JButton ("Rostlina 7");
-        typ7.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                typ1.setEnabled(false);
-                typ2.setEnabled(false);
-                typ3.setEnabled(false);
-                typ4.setEnabled(false);
-                typ5.setEnabled(false);
-                typ6.setEnabled(false);
-                typ7.setEnabled(false);
-                typ8.setEnabled(false);
-                typ9.setEnabled(false);
-                gener.setEnabled(true);
-                r.typ7();
-            }
-        });
-        this.add(typ7);
-        
-        
-        typ8 = new JButton ("Rostlina 8");
-        typ8.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                typ1.setEnabled(false);
-                typ2.setEnabled(false);
-                typ3.setEnabled(false);
-                typ4.setEnabled(false);
-                typ5.setEnabled(false);
-                typ6.setEnabled(false);
-                typ7.setEnabled(false);
-                typ8.setEnabled(false);
-                typ9.setEnabled(false);
-                gener.setEnabled(true);
-                r.typ8();
-            }
-        });
-        this.add(typ8);
-        
-        typ9 = new JButton ("Rostlina 9");
-        typ9.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                typ1.setEnabled(false);
-                typ2.setEnabled(false);
-                typ3.setEnabled(false);
-                typ4.setEnabled(false);
-                typ5.setEnabled(false);
-                typ6.setEnabled(false);
-                typ7.setEnabled(false);
-                typ8.setEnabled(false);
-                typ9.setEnabled(false);
-                gener.setEnabled(true);
-                r.typ9();
-            }
-        });
-        this.add(typ9);
-        
+         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+         
         // tlačítko pro generování rostlin po jedné iteraci
-        gener = new JButton ("Generovat");
-        gener.setEnabled(false);
+        gener = new JButton ("Generate");
         gener.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                // zavolá metodu pro kreslení rostliny
+
+                SwingWorker worker = new Worker();
+
+                worker.execute();
+                
+                r.strAxiom = r.axiom;
+                for(int i = 0;i < r.n;i++){
+                    r.generate();
+                    r.distance = (r.distance * 0.5);
+                }
                 dpanel.DrawingLines(r);
-                // zavolá metodu, která generuje nové symboly pro další
-                // vykreslení 
-                r.generate();
-                // zmenšení délky kreslení linie o půlku
-                r.distance = (r.distance * 0.5);
             }
         });
         this.add(gener);
         
         // tlačítko, které resetuje všechny parametry a pravidla
         // vyčistí pozadí a umožní si znovu vybrat nový typ rostliny
-        del = new JButton ("Začni znovu");
+        del = new JButton ("Start again");
         del.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                typ1.setEnabled(true);
-                typ2.setEnabled(true);
-                typ3.setEnabled(true);
-                typ4.setEnabled(true);
-                typ5.setEnabled(true);
-                typ6.setEnabled(true);
-                typ7.setEnabled(true);
-                typ8.setEnabled(true);
-                typ9.setEnabled(true);
-                gener.setEnabled(false);
                 r.reset();
                 dpanel.repaint();
             }
@@ -406,7 +222,7 @@ class ControlPanel extends JPanel{
         this.add(del);
         
         // tlačítko pro ukončení programu
-        end = new JButton ("Konec");
+        end = new JButton ("Close");
         end.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -416,7 +232,119 @@ class ControlPanel extends JPanel{
         this.add(end);
         
     }
+    
+    private class Worker extends SwingWorker<Graphics, Graphics>{
+
+        @Override
+        protected Graphics doInBackground() throws Exception {
+            Plants p = new Plants();
+            p.generate();
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+    }
 }
+
+class ControlPanelUP extends JPanel{
+    private JComboBox typ;
+    private JLabel Text;
+    private JLabel Text1;
+    private JComboBox Iteration;
+    
+    public ControlPanelUP(Plants r,DrawPanel dpanel){
+        
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+         
+        Text = new JLabel("Choose a plant");
+        this.add(Text);
+        
+        String[] types = {"Plant 1","Plant 2","Plant 3","Plant 4",
+            "Plant 5","Plant 6","Plant 7","Plant 8","Plant 9"}; 
+        typ = new JComboBox(types);
+        typ.setSelectedIndex(0);
+        r.typ1(dpanel);
+        
+        String[] number = {"1","2","3","4","5","6","7","8","9","10"};
+        Iteration = new JComboBox(number);
+        Iteration.setSelectedIndex(4);
+        
+        
+        Dimension preferredSize = typ.getPreferredSize();
+        preferredSize.height = 50;
+        typ.setPreferredSize(preferredSize);
+  
+        typ.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String s = (String) typ.getSelectedItem();
+                switch (s){
+                    case "Plant 1":
+                        r.typ1(dpanel);
+                        Iteration.setSelectedIndex(4);
+                        ControlPanelUP.this.repaint();
+                        break;
+                    case "Plant 2":
+                        r.typ2(dpanel);
+                        Iteration.setSelectedIndex(5);
+                        ControlPanelUP.this.repaint();
+                        break;
+                    case "Plant 3":
+                        r.typ3(dpanel);
+                        Iteration.setSelectedIndex(4);
+                        ControlPanelUP.this.repaint();
+                        break;
+                    case "Plant 4":
+                        r.typ4(dpanel);
+                        Iteration.setSelectedIndex(7);
+                        ControlPanelUP.this.repaint();
+                        break;
+                    case "Plant 5":
+                        r.typ5(dpanel);
+                        Iteration.setSelectedIndex(6);
+                        ControlPanelUP.this.repaint();
+                        break;
+                    case "Plant 6":
+                        r.typ6(dpanel);
+                        Iteration.setSelectedIndex(6);
+                        ControlPanelUP.this.repaint();
+                        break;
+                    case "Plant 7":
+                        r.typ7(dpanel);
+                        Iteration.setSelectedIndex(3);
+                        ControlPanelUP.this.repaint();
+                        break;
+                    case "Plant 8":
+                        r.typ8(dpanel);
+                        Iteration.setSelectedIndex(3);
+                        ControlPanelUP.this.repaint();
+                        break;
+                    case "Plant 9":
+                        r.typ9(dpanel);
+                        Iteration.setSelectedIndex(4);
+                        ControlPanelUP.this.repaint();
+                        break;
+                }  
+            }
+        });
+        this.add(typ);
+        
+        Text1 = new JLabel("Number of recommended iteration");
+        this.add(Text1);
+        
+        Dimension preferredSize1 = Iteration.getPreferredSize();
+        preferredSize.height = 50;
+        Iteration.setPreferredSize(preferredSize1);
+        Iteration.addActionListener(new ActionListener(){ 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String s = (String) Iteration.getSelectedItem();
+                r.iteration(s);
+            }
+        });
+        this.add(Iteration);
+    }
+}
+
 // třída reprezentující rostliny 
 class Plants {
     //vlastnosti objektu
@@ -426,6 +354,8 @@ class Plants {
     protected String axiom;
     protected double distance;
     protected double Angle;
+    protected int n;
+    protected String strAxiom;
     
     //konstruktor
     public Plants (){
@@ -435,103 +365,119 @@ class Plants {
         this.axiom = "";
         this.distance = 0;
         this.Angle = 0;
+        this.n = 0;
+        this.strAxiom = "";
     }
+    
     // Metoda, která generuje jednotlivé symboly podle určitých pravidel
     public void generate(){
-        String axioms = "";
-        for (int i = 0;i<axiom.length();i++){ 
-            if (axiom.charAt(i) == 'F'){
-                axioms = axioms + ruleF;
+        
+       this.strAxiom = this.axiom;
+        for(int u = 0;u < this.n;u++){
+            String ax = "";
+            for (int i = 0;i<strAxiom.length();i++){ 
+                if (strAxiom.charAt(i) == 'F'){
+                   ax = ax + ruleF;
+                }
+                else if(strAxiom.charAt(i) == 'X'){
+                    ax = ax + ruleX;
+                }
+                else if(strAxiom.charAt(i) == 'Z'){
+                    ax = ax + ruleZ;
+                }
+                else {
+                    ax = ax + strAxiom.charAt(i);
+                }
             }
-            else if(axiom.charAt(i) == 'X'){
-                axioms = axioms + ruleX;
-            }
-            else if(axiom.charAt(i) == 'Z'){
-                axioms = axioms + ruleZ;
-            }
-            else {
-                axioms = axioms + axiom.charAt(i);
-            }
+            strAxiom = ax;
+            this.distance = (this.distance * 0.5);
         }
-        this.axiom = axioms;
+    }
+    
+    public void iteration(String s){
+        this.n = Integer.parseInt(s);
     }
     // metody, které reprezentují parametry a pravidla pro generování
     // jednotlivých rostlin
-    public void typ1(){
+    public void typ1(DrawPanel dpanel){
         this.ruleF = "FF+[+F-F-F]-[-F+F+F]";
         this.axiom = "F";
-        this.distance = 135;
+        this.distance = dpanel.getHeight()/4;
         this.Angle = 22.5;
+        this.n = 5;
     }
     
-    public void typ2(){
+    public void typ2(DrawPanel dpanel){
         this.ruleF = "F[+F]F[-F][F]";
         this.axiom = "F";
-        this.distance = 250;
+        this.distance = dpanel.getHeight()/2;
         this.Angle = 20;
+        this.n = 6;
     }
     
-    public void typ3(){
+    public void typ3(DrawPanel dpanel){
         this.ruleF = "F[+F]F[-F]F";
         this.axiom = "F";
-        this.distance = 50;
+        this.distance = dpanel.getHeight()/8;
         this.Angle = 25.7;
+        this.n = 5;
     }
     
-    public void typ4(){
+    public void typ4(DrawPanel dpanel){
         this.ruleF = "FF";
         this.ruleX = "F[+X]F[-X]+X";
         this.axiom = "X";
-        this.distance = 250;
+        this.distance = dpanel.getHeight()/2;
         this.Angle = 20;
+        this.n = 8;
     }
     
-    public void typ5(){
+    public void typ5(DrawPanel dpanel){
         this.ruleF = "FF";
         this.ruleX = "F[+X][-X]FX";
         this.axiom = "X";
-        this.distance = 250;
+        this.distance = dpanel.getHeight()/2;
         this.Angle = 25.7;
+        this.n = 7;
     }
     
-    public void typ6(){
+    public void typ6(DrawPanel dpanel){
         this.ruleF = "FF";
         this.ruleX = "F-[[X]+X]+F[+FX]-X";
         this.axiom = "X";
-        this.distance = 180;
+        this.distance = dpanel.getHeight()/3;
         this.Angle = 22.5;
+        this.n = 7;
     }
     
-    public void typ7(){
+    public void typ7(DrawPanel dpanel){
         this.ruleF = "F[+F][-F[-F]F]F[+F][-F]";
         this.axiom = "F";
-        this.distance = 200;
+        this.distance = dpanel.getHeight()/2;
         this.Angle = 18;
+        this.n = 4;
     }
     
-    public void typ8(){
+    public void typ8(DrawPanel dpanel){
         this.ruleF = "FX[FX[+XF]]";
         this.ruleX = "FF[+XZ++X-F[+ZX]][-X++F-X]";
         this.ruleZ = "[+F-X-F][++ZX]";
         this.axiom = "X";
-        this.distance = 130;
+        this.distance = dpanel.getHeight()/3.5;
         this.Angle = 15;
+        this.n = 4;
     }
     
-    public void typ9(){
+    public void typ9(DrawPanel dpanel){
         this.ruleF = "FF[+F][-FF][-F+F]";
         this.axiom = "F";
-        this.distance = 130;
+        this.distance = dpanel.getHeight()/3;
         this.Angle = 22;
+        this.n = 5;
     }
     // metoda, která resetuje pravidla a parametry
     public void reset(){
-        this.ruleF = "";
-        this.ruleX = "";
-        this.ruleZ = "";
-        this.axiom = "";
-        this.distance = 0;
-        this.Angle = 0;
+        this.strAxiom = "";
     }
 }
 
