@@ -50,6 +50,7 @@ class DrawPanel extends JPanel{
         s = new Stack();
         // objekt pro nové vlákno
         worker = new GenerateWorker();
+        reseter = new Plants();
         // proměnné získané z comboboxů
         IterationNumber = 5;
         typeNumber = 1; 
