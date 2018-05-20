@@ -17,36 +17,43 @@ import javax.swing.JPanel;
  *
  * @author MazyK
  */
+// třída, která reprezentuje tlačítka v horní oblasti grafického rozhraní
 class ControlPanelUP extends JPanel{
+    // vlastnosti objektu
     private JComboBox type;
     private JLabel Text;
     private JLabel Text1;
     private JComboBox Iteration;
     
+    // konstruktor
     public ControlPanelUP(DrawPanel dpanel){
-        dpanel.typeNumber = 1;
-        dpanel.IterationNumber = 5;
-       
+        // BoxLayout
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-         
+        // Popis prvního comboboxu
         Text = new JLabel("Choose a plant");
         this.add(Text);
         
+        // možnosti comboboxu pro výběr rostliny
         String[] types = {"Plant 1","Plant 2","Plant 3","Plant 4",
             "Plant 5","Plant 6","Plant 7","Plant 8","Plant 9"}; 
         type = new JComboBox(types);
         type.setSelectedIndex(0);
         
+        // možnosti comboboxu pro výběr počtu iterací
         String[] number = {"1","2","3","4","5","6","7","8","9","10"};
         Iteration = new JComboBox(number);
         Iteration.setSelectedIndex(4);
         
-        
+        // preferovaná velikost comboboxu (pro lepší vizuální stránku)
         Dimension preferredSize = type.getPreferredSize();
         preferredSize.height = 50;
         type.setPreferredSize(preferredSize);
-  
+        
         type.addActionListener(new ActionListener(){
+            // po vybrání jedné z možností se překreslí combobox znázorňující
+            // počet iterací a nastaví se doporučená hodnota
+            // zároveň se nastaví vlastnosti DrawPanelu typeNumber, jenž reprezentuje
+            // typ rostliny a IterationNumber, jenž reprezentuje počet iterací
             @Override
             public void actionPerformed(ActionEvent e) {
                 String s = (String) type.getSelectedItem();
@@ -110,13 +117,17 @@ class ControlPanelUP extends JPanel{
         });
         this.add(type);
         
+        // Popis druhého comboboxu
         Text1 = new JLabel("Number of recommended iterations");
         this.add(Text1);
         
+        // preferovaná velikost comboboxu (pro lepší vizuální stránku)
         Dimension preferredSize1 = Iteration.getPreferredSize();
         preferredSize.height = 50;
         Iteration.setPreferredSize(preferredSize1);
         Iteration.addActionListener(new ActionListener(){ 
+            // po výběru jiného, než doporučeného počtu iterací se přenastaví
+            // počet iterací
             @Override
             public void actionPerformed(ActionEvent e) {
                 String s = (String) Iteration.getSelectedItem();

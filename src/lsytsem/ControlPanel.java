@@ -15,7 +15,7 @@ import javax.swing.JPanel;
  *
  * @author MazyK
  */
-// třída, která reprezentuje tlačítka
+// třída, která reprezentuje tlačítka na pravé straně grafického rozhraní
 class ControlPanel extends JPanel{
     // vlastnosti objektu
     private JButton gener;
@@ -23,20 +23,23 @@ class ControlPanel extends JPanel{
     private JButton end;
 
     // konstruktor
-    public ControlPanel(DrawPanel dpanel) {    
-         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    public ControlPanel(DrawPanel dpanel) {
+        // BoxLayout
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        // tlačítko pro generování rostlin po jedné iteraci
+        // tlačítko pro generování rostlin
         gener = new JButton ("Generate");
         gener.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
+                // po stisknutí se spustí nové vlákno
                 dpanel.worker.execute(); 
                 stop.setEnabled(true);
             }
         });
         this.add(gener);
- 
+        
+        //tlačítko pro přerušení vlákna a resetování DrawPanelu
         stop = new JButton ("Stop calculating process and clear out the background");
         stop.setEnabled(false);
         stop.addActionListener(new ActionListener(){

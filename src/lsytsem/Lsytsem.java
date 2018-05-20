@@ -46,15 +46,16 @@ public class Lsytsem {
         JFrame window = new JFrame("Okno");
         // po zavření okna aplikace skončí
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // layout grafického rozhraní vedle sebe
+        // layout grafického rozhraní
         window.setLayout(new BorderLayout(10,10));
-        // tvorba objektu Plants, DrawPanel a ControlPanel
+        // tvorba objektu DrawPanel
         DrawPanel dpanel = new DrawPanel();
-        // přidání objektu Drawpanel do grafického rozhraní 
+        // přidání objektu Drawpanel do grafického rozhraní na střed
         window.add(dpanel,BorderLayout.CENTER);
+        // tvorba objektu ControlPanel a ControlPanelUP
         ControlPanel cpanel = new ControlPanel(dpanel);
         ControlPanelUP cpanelUP = new ControlPanelUP (dpanel);
-        // přidání objektu ControlPanel do grafického rozhraní 
+        // přidání panelů do grafického rozhraní nahoru a doprava
         window.add(cpanelUP,BorderLayout.PAGE_START);
         window.add(cpanel,BorderLayout.LINE_END);
         // nastaví velikost okna tak, aby veškeré komponenty byly vidět

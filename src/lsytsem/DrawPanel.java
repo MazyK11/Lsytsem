@@ -21,6 +21,7 @@ import javax.swing.SwingWorker;
  *
  * @author MazyK
  */
+//třída reprezentující vykreslování na pozadí
 class DrawPanel extends JPanel{
     //vlastnosti
     protected List<double[]>lines;
@@ -37,40 +38,49 @@ class DrawPanel extends JPanel{
     
     // konstruktor
     public DrawPanel(){
-        
-        // začáteční bod (střed dole)
+        //začáteční bod (střed dole)
         sx = this.getWidth()/2;
         sy = this.getHeight();
+        // posun na ose x a y
         x = 0;
         y = 0;
+        //list linií
         lines = new LinkedList<>();
+        // zásobník
         s = new Stack();
+        // objekt pro nové vlákno
         worker = new GenerateWorker();
-        IterationNumber = 0;
-        typeNumber = 0; 
+        // proměnné získané z comboboxů
+        IterationNumber = 5;
+        typeNumber = 1; 
         // vytvoření pozadí
         setBorder(BorderFactory.createLineBorder(Color.black));
         setBackground(Color.white); 
         
     }
-    // velikost pozadí
+    // defaultní velikost pozadí
     @Override
     public Dimension getPreferredSize(){
         return new Dimension(500,500);
     }
+    
     // kreslící metoda předdefinovaná
     @Override
     public void paintComponent(Graphics g){
         // konstruktor třídy JPanel
         super.paintComponent(g);
+        // vytvoření objektu Graphics2D
         Graphics2D g2 = (Graphics2D) g;
         g.setColor(Color.black);
+        // vykreslení linií, které se nacházejí v listu
         for (double [] line : lines){
             g2.draw(new Line2D.Double(line[0],line[1], line[2], line[3]));
         }
+        // odstranění objektu Graphics2D
         g2.dispose();
     }
-    // metoda pro resetování hodnot na výchozí hodnoty
+    
+    // metoda pro resetování hodnot
     public void reset(Plants r){
         sx = this.getWidth()/2;
         sy = this.getHeight();
@@ -82,10 +92,12 @@ class DrawPanel extends JPanel{
         worker = new GenerateWorker();
     }
     
+    // metoda, která podle významu jednotlivých znaků vytvoří z vygenerované
+    // posloupnosti znaků linie a uloží je do listu
     public void DrawingLines(Plants r){
         // resetování hodnot
         reset(r);
-        // projde každý znak ve Stringu
+        // projde každý znak ve vygenerované posloupnosti 
         for (int i =0;i<r.axiom.length();i++){
             // pokud je znak "+" kurzor se natočí doprava
             if (r.axiom.charAt(i) == '+'){
@@ -116,7 +128,7 @@ class DrawPanel extends JPanel{
                 sx = (double) s.pop();
                 
             }
-            // tvorba pole pro vykreslení linie
+            // tvorba pole pro uložení linie
             if (r.axiom.charAt(i) == 'F'){
                 double [] line = new double[4];
                 // x,y začátečního bodu
@@ -133,17 +145,24 @@ class DrawPanel extends JPanel{
             }
         }
     }
+    
+    // třída reprezentující vlákno, které pracuje paralelně s grafickým rozhraním
     public class GenerateWorker extends SwingWorker<DrawPanel,Object>{
-
+        // metoda, která vytvoří objekt rostliny pomocí parametrického konstruktoru
+        // následně zavolá metodu pro generování posloupnosti znaků a
+        // zkopíruje vlastnosti objektu rostliny do vlastnosti DrawPanelu
+        // (využití při resetování plátna)
+        // dále volá metodu pro vytvoření linií z vygenerované posloupnosti 
         @Override
         protected DrawPanel doInBackground() throws Exception {
-            Plants p = new Plants(DrawPanel.this);
+            Plants p = new Plants(DrawPanel.this.typeNumber,DrawPanel.this.IterationNumber);
             p.generate();
             DrawPanel.this.reseter = p;
             DrawPanel.this.DrawingLines(p);
             return DrawPanel.this;
         }
-       
+        // metoda se volá po doběhnutí metody doInBackground a spustí předdefinovanou
+        // kreslící metodu DrawPanelu
         @Override
          protected void done(){
              DrawPanel.this.repaint();
