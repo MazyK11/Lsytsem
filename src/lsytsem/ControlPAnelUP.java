@@ -55,38 +55,47 @@ class ControlPanelUP extends JPanel{
                     case "Plant 1":
                         dpanel.typeNumber = 1;
                         dpanel.IterationNumber = 5;
+                        Iteration.setValue(5);
                         break;
                     case "Plant 2":
                         dpanel.typeNumber = 2;
                         dpanel.IterationNumber = 6;
+                        Iteration.setValue(6);
                         break;
                     case "Plant 3":
                         dpanel.typeNumber = 3;
                         dpanel.IterationNumber = 5;
+                        Iteration.setValue(5);
                         break;
                     case "Plant 4":
                         dpanel.typeNumber = 4;
                         dpanel.IterationNumber = 8;
+                        Iteration.setValue(8);
                         break;
                     case "Plant 5":
                         dpanel.typeNumber = 5;
                         dpanel.IterationNumber = 7;
+                        Iteration.setValue(7);
                         break;
                     case "Plant 6":
                         dpanel.typeNumber = 6;
                         dpanel.IterationNumber = 7;
+                        Iteration.setValue(7);
                         break;
                     case "Plant 7":
                         dpanel.typeNumber = 7;
                         dpanel.IterationNumber = 4;
+                        Iteration.setValue(4);
                         break;
                     case "Plant 8":
                         dpanel.IterationNumber = 4;
                         dpanel.typeNumber = 8;
+                        Iteration.setValue(4);
                         break;
                     case "Plant 9":
                         dpanel.IterationNumber = 4;
                         dpanel.typeNumber = 9;
+                        Iteration.setValue(5);
                         break;
                 }  
             }
