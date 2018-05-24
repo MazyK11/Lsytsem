@@ -151,7 +151,6 @@ class DrawPanel extends JPanel{
             }
         }
     }
-    
     // class, which represents thread, which is working parallel with GUI
     public class GenerateWorker extends SwingWorker<DrawPanel,Object>{
         // Method, which creates Plants object using parametric constructor.
