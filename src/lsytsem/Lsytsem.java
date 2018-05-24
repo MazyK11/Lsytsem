@@ -6,26 +6,7 @@
 package lsytsem;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.geom.Line2D;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingWorker;
 
 /**
  *
@@ -37,30 +18,30 @@ public class Lsytsem {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // volání funkce pro vytvoření grafického rozhraní
+        // calling function for creating GUI 
         createAndShowGUI();
     }
     
     private static void createAndShowGUI(){
-        // tvorba okna
-        JFrame window = new JFrame("Okno");
-        // po zavření okna aplikace skončí
+        // creating of window
+        JFrame window = new JFrame("Plants generation using L-system");
+        // application will end when the window is closed
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // layout grafického rozhraní
+        // GUI layout
         window.setLayout(new BorderLayout(10,10));
-        // tvorba objektu DrawPanel
+        // creating DrawPanel object
         DrawPanel dpanel = new DrawPanel();
-        // přidání objektu Drawpanel do grafického rozhraní na střed
+        // adding DrawPanel object to the middle of the GUI
         window.add(dpanel,BorderLayout.CENTER);
-        // tvorba objektu ControlPanel a ControlPanelUP
+        // creating ControlPanel and ControlPanelUP objects
         ControlPanel cpanel = new ControlPanel(dpanel);
         ControlPanelUP cpanelUP = new ControlPanelUP (dpanel);
-        // přidání panelů do grafického rozhraní nahoru a doprava
+        // adding panels to right side and upper area of GUI
         window.add(cpanelUP,BorderLayout.PAGE_START);
         window.add(cpanel,BorderLayout.LINE_END);
-        // nastaví velikost okna tak, aby veškeré komponenty byly vidět
+        // setting size of window so that every components are visible
         window.pack();
-        // Otevření okna
+        // opening of the window
         window.setVisible(true);
     }
 }

@@ -21,9 +21,9 @@ import javax.swing.SwingWorker;
  *
  * @author MazyK
  */
-//třída reprezentující vykreslování na pozadí
+// class, which represents drawing on background
 class DrawPanel extends JPanel{
-    //vlastnosti
+    // Properties
     protected List<double[]>lines;
     protected SwingWorker worker;
     protected Plants reseter;
@@ -36,52 +36,53 @@ class DrawPanel extends JPanel{
     private double rotate;
     private Stack s;
     
-    // konstruktor
+    // constructor
     public DrawPanel(){
-        //začáteční bod (střed dole)
+        // starting point(bottom middle)
         sx = this.getWidth()/2;
         sy = this.getHeight();
-        // posun na ose x a y
+        // shift on axis x and y
         x = 0;
         y = 0;
-        //list linií
+        //list of lines
         lines = new LinkedList<>();
-        // zásobník
+        // stack
         s = new Stack();
-        // objekt pro nové vlákno
+        // object for new thread
         worker = new GenerateWorker();
         reseter = new Plants();
-        // proměnné získané z comboboxů
+        // variables obtained from combobox and spinner button
+        // Variables represents number of iteration and type of plants
         IterationNumber = 5;
         typeNumber = 1; 
-        // vytvoření pozadí
+        // creation of background
         setBorder(BorderFactory.createLineBorder(Color.black));
         setBackground(Color.white); 
         
     }
-    // defaultní velikost pozadí
+    // default size of background
     @Override
     public Dimension getPreferredSize(){
         return new Dimension(500,500);
     }
     
-    // kreslící metoda předdefinovaná
+    // Drawing method
     @Override
     public void paintComponent(Graphics g){
-        // konstruktor třídy JPanel
+        // constructor of class JPanel
         super.paintComponent(g);
-        // vytvoření objektu Graphics2D
+        // creation of Graphics2D object
         Graphics2D g2 = (Graphics2D) g;
         g.setColor(Color.black);
-        // vykreslení linií, které se nacházejí v listu
+        // drawing the lines, which are in the list
         for (double [] line : lines){
             g2.draw(new Line2D.Double(line[0],line[1], line[2], line[3]));
         }
-        // odstranění objektu Graphics2D
+        // delete of Graphics2D object
         g2.dispose();
     }
     
-    // metoda pro resetování hodnot
+    // Method for resetting the values
     public void reset(Plants r){
         sx = this.getWidth()/2;
         sy = this.getHeight();
@@ -93,67 +94,72 @@ class DrawPanel extends JPanel{
         worker = new GenerateWorker();
     }
     
-    // metoda, která podle významu jednotlivých znaků vytvoří z vygenerované
-    // posloupnosti znaků linie a uloží je do listu
+    // Method, which takes generated individual symbols and create lines 
+    // according to the meaning of that symbols. Lines are saved in the list.
+    
     public void DrawingLines(Plants r){
-        // resetování hodnot
+        // resetting of the values
         reset(r);
-        // projde každý znak ve vygenerované posloupnosti 
+        // taking every symbol in generated sequence
         for (int i =0;i<r.axiom.length();i++){
-            // pokud je znak "+" kurzor se natočí doprava
-            if (r.axiom.charAt(i) == '+'){
-               rotate = rotate + r.Angle;
-               x = (Math.sin(Math.toRadians(rotate)) *  r.distance);
-               y = (Math.cos(Math.toRadians(rotate)) *  r.distance);
-            }
-            // pokud je znak "-" kurzor se natočí doleva
-            if (r.axiom.charAt(i) == '-'){
-                rotate = rotate - r.Angle;
-                x = (Math.sin(Math.toRadians(rotate))*  r.distance);
-                y = (Math.cos(Math.toRadians(rotate))*  r.distance);
-            }
-            // uloží jednotlivé hodnoty do zásobníku
-            if (r.axiom.charAt(i) == '['){
-                s.push(sx);
-                s.push(sy);
-                s.push(rotate);
-                s.push(x);
-                s.push(y);
-            }
-            // načte a odstraní jednotlivé hodnoty ze zásobníku
-            if (r.axiom.charAt(i) == ']'){
-                y = (double) s.pop();
-                x = (double) s.pop();
-                rotate = (double) s.pop();
-                sy = (double) s.pop();
-                sx = (double) s.pop();
-                
-            }
-            // tvorba pole pro uložení linie
-            if (r.axiom.charAt(i) == 'F'){
-                double [] line = new double[4];
-                // x,y začátečního bodu
-                line[0] = sx;
-                line[1] = sy;
-                // x,y koncového bodu
-                line[2] = sx + x;
-                line[3] = sy - y;
-                // přidání pole do listu
-                lines.add(line);
-                //přenastavení startovních bodů na body koncové
-                sx = sx + x;
-                sy = sy - y;
+            switch (r.axiom.charAt(i)) {
+                // if the symbol is "+", cursor will rotate to the right
+                case '+':
+                    rotate = rotate + r.Angle;
+                    x = (Math.sin(Math.toRadians(rotate)) *  r.distance);
+                    y = (Math.cos(Math.toRadians(rotate)) *  r.distance);
+                    break;
+                // if the symbol is "-", cursor will rotate to the left
+                case '-':
+                    rotate = rotate - r.Angle;
+                    x = (Math.sin(Math.toRadians(rotate))*  r.distance);
+                    y = (Math.cos(Math.toRadians(rotate))*  r.distance);
+                    break;
+                // saving values to the stack
+                case '[':
+                    s.push(sx);
+                    s.push(sy);
+                    s.push(rotate);
+                    s.push(x);
+                    s.push(y);
+                    break;
+                // loading and deleting values from the stack 
+                case ']':
+                    y = (double) s.pop();
+                    x = (double) s.pop();
+                    rotate = (double) s.pop();
+                    sy = (double) s.pop();
+                    sx = (double) s.pop();
+                    break;
+                // creating array for start and end points of line
+                case 'F':
+                    double [] line = new double[4];
+                    // x,y of starting point
+                    line[0] = sx;
+                    line[1] = sy;
+                    // x,y of ending point
+                    line[2] = sx + x;
+                    line[3] = sy - y;
+                    // adding array to the list
+                    lines.add(line);
+                    //creating new start point on the place of the end point
+                    sx = sx + x;
+                    sy = sy - y;
+                    break;
+                default:
+                    break;
             }
         }
     }
     
-    // třída reprezentující vlákno, které pracuje paralelně s grafickým rozhraním
+    // class, which represents thread, which is working parallel with GUI
     public class GenerateWorker extends SwingWorker<DrawPanel,Object>{
-        // metoda, která vytvoří objekt rostliny pomocí parametrického konstruktoru
-        // následně zavolá metodu pro generování posloupnosti znaků a
-        // zkopíruje vlastnosti objektu rostliny do vlastnosti DrawPanelu
-        // (využití při resetování plátna)
-        // dále volá metodu pro vytvoření linií z vygenerované posloupnosti 
+        // Method, which creates Plants object using parametric constructor.
+        // After that the method for generating symbol sequence is called and  
+        // properties of Plants object are copied to DrawPanel properties 
+        // (this is used for background resetting).
+        // At the end method, which creates lines from sequence of symbols is 
+        // called 
         @Override
         protected DrawPanel doInBackground() throws Exception {
             Plants p = new Plants(DrawPanel.this.typeNumber,DrawPanel.this.IterationNumber);
@@ -162,8 +168,8 @@ class DrawPanel extends JPanel{
             DrawPanel.this.DrawingLines(p);
             return DrawPanel.this;
         }
-        // metoda se volá po doběhnutí metody doInBackground a spustí předdefinovanou
-        // kreslící metodu DrawPanelu
+        // This method is called after the method doInBackground is finished. 
+        // This method will call drawing method from DrawPanel
         @Override
          protected void done(){
              DrawPanel.this.repaint();

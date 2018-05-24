@@ -5,8 +5,10 @@
  */
 package lsytsem;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -15,31 +17,34 @@ import javax.swing.JPanel;
  *
  * @author MazyK
  */
-// třída, která reprezentuje tlačítka na pravé straně grafického rozhraní
+// class, which represents buttons on the right side of the GUI 
 class ControlPanel extends JPanel{
-    // vlastnosti objektu
+    // Properties
     private JButton gener;
     private JButton stop;
     private JButton end;
 
-    // konstruktor
+    // constructor
     public ControlPanel(DrawPanel dpanel) {
         // BoxLayout
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        // tlačítko pro generování rostlin
+        //button for plants generation
         gener = new JButton ("Generate");
         gener.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                // po stisknutí se spustí nové vlákno
+                // new thread will start after the button is pressed
                 dpanel.worker.execute(); 
                 stop.setEnabled(true);
             }
         });
         this.add(gener);
+        // size of the button
+        gener.setMinimumSize(new Dimension(350, 30));
+        gener.setMaximumSize(new Dimension(350, 30));
         
-        //tlačítko pro přerušení vlákna a resetování DrawPanelu
+        // button for stopping the thread and reset DrawPanel
         stop = new JButton ("Stop calculating process and clear out the background");
         stop.setEnabled(false);
         stop.addActionListener(new ActionListener(){
@@ -51,9 +56,13 @@ class ControlPanel extends JPanel{
             }
         });
         this.add(stop);
+        // size of the button
+        stop.setMinimumSize(new Dimension(350, 30));
+        stop.setMaximumSize(new Dimension(350, 30));
         
-        
-        // tlačítko pro ukončení programu
+        // gap between buttons
+        this.add(Box.createRigidArea(new Dimension(50,50)));
+        // button for closing the program
         end = new JButton ("Close");
         end.addActionListener(new ActionListener(){
             @Override
@@ -62,6 +71,9 @@ class ControlPanel extends JPanel{
             }
         });
         this.add(end);
+        // size of the button
+        end.setMinimumSize(new Dimension(350, 30));
+        end.setMaximumSize(new Dimension(350, 30));
     }
     
 }

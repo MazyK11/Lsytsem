@@ -5,55 +5,49 @@
  */
 package lsytsem;
 
-import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+
 
 /**
  *
  * @author MazyK
  */
-// třída, která reprezentuje tlačítka v horní oblasti grafického rozhraní
+// class, which represents buttons in the upper area of the GUI 
 class ControlPanelUP extends JPanel{
-    // vlastnosti objektu
+    // Properties
     private JComboBox type;
     private JLabel Text;
     private JLabel Text1;
-    private JComboBox Iteration;
+    private JSpinner Iteration;
     
-    // konstruktor
+    // constructor
     public ControlPanelUP(DrawPanel dpanel){
         // BoxLayout
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        // Popis prvního comboboxu
+        setLayout(new FlowLayout());
+        
+        // combobox label
         Text = new JLabel("Choose a plant");
         this.add(Text);
         
-        // možnosti comboboxu pro výběr rostliny
+        // combobox options for plants selection
         String[] types = {"Plant 1","Plant 2","Plant 3","Plant 4",
             "Plant 5","Plant 6","Plant 7","Plant 8","Plant 9"}; 
+        
         type = new JComboBox(types);
         type.setSelectedIndex(0);
         
-        // možnosti comboboxu pro výběr počtu iterací
-        String[] number = {"1","2","3","4","5","6","7","8","9","10"};
-        Iteration = new JComboBox(number);
-        Iteration.setSelectedIndex(4);
-        
-        // preferovaná velikost comboboxu (pro lepší vizuální stránku)
-        Dimension preferredSize = type.getPreferredSize();
-        preferredSize.height = 50;
-        type.setPreferredSize(preferredSize);
         
         type.addActionListener(new ActionListener(){
-            // po vybrání jedné z možností se překreslí combobox znázorňující
-            // počet iterací a nastaví se doporučená hodnota
-            // zároveň se nastaví vlastnosti DrawPanelu typeNumber, jenž reprezentuje
-            // typ rostliny a IterationNumber, jenž reprezentuje počet iterací
+            // When some option is chosen, IterationNumber and typeNumber,
+            // which represents number of iteration and type of plants are set 
             @Override
             public void actionPerformed(ActionEvent e) {
                 String s = (String) type.getSelectedItem();
@@ -61,79 +55,60 @@ class ControlPanelUP extends JPanel{
                     case "Plant 1":
                         dpanel.typeNumber = 1;
                         dpanel.IterationNumber = 5;
-                        Iteration.setSelectedIndex(4);
-                        ControlPanelUP.this.repaint();
                         break;
                     case "Plant 2":
                         dpanel.typeNumber = 2;
                         dpanel.IterationNumber = 6;
-                        Iteration.setSelectedIndex(5);
-                        ControlPanelUP.this.repaint();
                         break;
                     case "Plant 3":
                         dpanel.typeNumber = 3;
                         dpanel.IterationNumber = 5;
-                        Iteration.setSelectedIndex(4);
-                        ControlPanelUP.this.repaint();
                         break;
                     case "Plant 4":
                         dpanel.typeNumber = 4;
                         dpanel.IterationNumber = 8;
-                        Iteration.setSelectedIndex(7);
-                        ControlPanelUP.this.repaint();
                         break;
                     case "Plant 5":
                         dpanel.typeNumber = 5;
                         dpanel.IterationNumber = 7;
-                        Iteration.setSelectedIndex(6);
-                        ControlPanelUP.this.repaint();
                         break;
                     case "Plant 6":
                         dpanel.typeNumber = 6;
                         dpanel.IterationNumber = 7;
-                        Iteration.setSelectedIndex(6);
-                        ControlPanelUP.this.repaint();
                         break;
                     case "Plant 7":
                         dpanel.typeNumber = 7;
                         dpanel.IterationNumber = 4;
-                        Iteration.setSelectedIndex(3);
-                        ControlPanelUP.this.repaint();
                         break;
                     case "Plant 8":
                         dpanel.IterationNumber = 4;
                         dpanel.typeNumber = 8;
-                        Iteration.setSelectedIndex(3);
-                        ControlPanelUP.this.repaint();
                         break;
                     case "Plant 9":
                         dpanel.IterationNumber = 4;
                         dpanel.typeNumber = 9;
-                        Iteration.setSelectedIndex(4);
-                        ControlPanelUP.this.repaint();
                         break;
                 }  
             }
         });
         this.add(type);
         
-        // Popis druhého comboboxu
+        // label for spinner button
         Text1 = new JLabel("Number of recommended iterations");
         this.add(Text1);
-        
-        // preferovaná velikost comboboxu (pro lepší vizuální stránku)
-        Dimension preferredSize1 = Iteration.getPreferredSize();
-        preferredSize.height = 50;
-        Iteration.setPreferredSize(preferredSize1);
-        Iteration.addActionListener(new ActionListener(){ 
-            // po výběru jiného, než doporučeného počtu iterací se přenastaví
-            // počet iterací
+        // max and min values of iteration, step 1
+        SpinnerModel model = new SpinnerNumberModel(dpanel.IterationNumber, 1, 10, 1);
+        Iteration = new JSpinner(model);
+        // IterationNumber is set when the number is changed
+        Iteration.addChangeListener(new javax.swing.event.ChangeListener(){ 
             @Override
-            public void actionPerformed(ActionEvent e) {
-                String s = (String) Iteration.getSelectedItem();
-                dpanel.IterationNumber = Integer.parseInt(s);
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                dpanel.IterationNumber =  (Integer) model.getValue();
             }
+        
         });
         this.add(Iteration);
+       
     }
+
 }

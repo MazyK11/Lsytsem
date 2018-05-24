@@ -9,9 +9,9 @@ package lsytsem;
  *
  * @author MazyK
  */
-// třída reprezentující rostliny 
+// class, which represents plants
 class Plants {
-    //vlastnosti objektu
+    // Properties
     protected String ruleF;
     protected String ruleX;
     protected String ruleZ;
@@ -20,7 +20,7 @@ class Plants {
     protected double Angle;
     protected int n;
     
-    //konstruktor
+    // constructor
     public Plants (){
         this.ruleF = "";
         this.ruleX = "";
@@ -30,9 +30,10 @@ class Plants {
         this.Angle = 0;
         this.n = 0;
     }
-    // parametrický konstruktor
+    // parametric constructor
     public Plants(int type,int iteration){
-        // zavolá metodu podle typu, která naplní vlastnosti objektu
+        // calling the method according to the chosen type 
+        // Method will set the properties
         switch (type) {
             case 1:
                 typ1();
@@ -65,14 +66,15 @@ class Plants {
                 typ1();
                 break;
         }
-        // pokud uživatel přenastavil počet iterací, přepíše se zde
+        // if user changed number of iteration, it will be set here
         if (this.n != iteration){        
             this.n = iteration;
         }
     } 
+    //Method, which generate individual symbols according to rules. Number of 
+    // generations depend on number of iteration. Distance of lines is reduce
+    // by half after every iteration 
     
-    // Metoda, která generuje x krát jednotlivé symboly podle pravidel, kde x je
-    // počet iterací. Po každé iteraci je zmenšena vzdálenost linií o polovinu
     public void generate(){
         for(int u = 0;u < this.n;u++){
             String ax = "";
@@ -94,8 +96,8 @@ class Plants {
             this.distance = (this.distance * 0.5);
         }
     }
-    // Metody pro naplnění vlastností objektu
-    // každá metoda reprezentuje jeden typ rostliny
+    // Methods, which set properties of object
+    // every methods represents one type of plants
     public void typ1(){
         this.ruleF = "FF+[+F-F-F]-[-F+F+F]";
         this.axiom = "F";
